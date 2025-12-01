@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORTEGA - Camisas Infantis</title>
+    <style>
+        /* ... Estilos CSS (inalterados) ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4a4438 0%, #2d2922 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 3px solid #d4a03a;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .logo span {
+            color: #ff6b35;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #d4a03a;
+        }
+
+        .page-header {
+            padding: 150px 20px 80px;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3));
+        }
+
+        .page-header h1 {
+            font-size: 56px;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+        }
+
+        .page-header h1 span {
+            color: #ff6b35;
+        }
+
+        .page-header p {
+            font-size: 20px;
+            color: #d4a03a;
+        }
+
+        .products-section {
+            padding: 60px 20px 100px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #d4a03a;
+            border-radius: 25px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 35px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s;
+            border: 2px solid transparent;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #d4a03a;
+            box-shadow: 0 20px 40px rgba(212, 160, 58, 0.3);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(212, 160, 58, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+
+        .product-card:hover .product-image::before {
+            left: 100%;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .product-info {
+            padding: 25px;
+        }
+
+        .product-category {
+            color: #d4a03a;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-size: 22px;
+            margin-bottom: 12px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .product-description {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .product-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .feature-tag {
+            background: rgba(212, 160, 58, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            color: #d4a03a;
+            border: 1px solid #d4a03a;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .product-price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .buy-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            border: none;
+            border-radius: 25px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .buy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.5);
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 3px solid #d4a03a;
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 36px;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">ORTEGA <span>👑</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="index.html#categorias">CATEGORIAS</a></li>
+                <li><a href="index.html#contato">CONTATO</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="page-header">
+        <h1>👕 <span>CAMISAS</span> INFANTIS</h1>
+        <p>Estilo e conforto para os pequenos</p>
+    </section>
+
+    <section class="products-section">
+        <div class="filter-bar">
+            <button class="filter-btn active">TODOS</button>
+            <button class="filter-btn">OVERSIZED</button>
+            <button class="filter-btn">VANS</button>
+            <button class="filter-btn">DRYFIT</button>
+            <button class="filter-btn">TEMÁTICAS</button>
+        </div>
+
+        <div class="products-grid">
+            </div>
+    </section>
+
+    <footer>
+        <p>🐺 ORTEGA - HUB INFANTIL 👑</p>
+        <p>Estilo, Qualidade e Conforto para seu Filho</p>
+        <p style="margin-top: 20px; color: #d4a03a;">© 2024 ORTEGA. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        let currentFilter = 'TODOS';
+        let allProducts = [];
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.textContent;
+                renderProducts();
+            });
+        });
+
+        // Carregar produtos do storage
+        function loadProducts() {
+            try {
+                const stored = localStorage.getItem('ortega_products');
+                if (stored) {
+                    const products = JSON.parse(stored);
+                    // Filtra apenas os produtos desta categoria
+                    allProducts = products.filter(p => p.category === 'camisas');
+                    // Ordena do mais novo para o mais antigo (opcional, mas bom para destaque)
+                    allProducts.sort((a, b) => b.createdAt - a.createdAt);
+                    renderProducts();
+                } else {
+                    renderEmptyState();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                renderEmptyState();
+            }
+        }
+        
+        function renderEmptyState() {
+             const container = document.querySelector('.products-grid');
+             container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #999;">
+                        <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;">📦</div>
+                        <p>Nenhum produto encontrado nesta categoria.</p>
+                        <p style="margin-top: 10px; font-size: 14px;">Adicione produtos pelo <a href="admin.html" style="color: #ff6b35;">painel administrativo</a>!</p>
+                    </div>
+                `;
+        }
+
+
+        function renderProducts() {
+            const container = document.querySelector('.products-grid');
+            
+            let filtered = allProducts;
+            if (currentFilter !== 'TODOS') {
+                filtered = allProducts.filter(p => 
+                    // Garante que o subcategory exista e inclua o filtro atual (case insensitive)
+                    p.subcategory && p.subcategory.toUpperCase().includes(currentFilter)
+                );
+            }
+
+            if (filtered.length === 0) {
+                renderEmptyState();
+                return;
+            }
+
+            container.innerHTML = filtered.map((product, index) => `
+                <div class="product-card">
+                    <div class="product-image">
+                        ${product.image && product.image.length > 200 ? `<img src="${product.image}" alt="${product.name}">` : '👕'}
+                        ${index === 0 ? '<div class="product-badge">NOVO</div>' : (index === 1 ? '<div class="product-badge">DESTAQUE</div>' : '')}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">${(product.subcategory || 'CAMISA').toUpperCase()}</div>
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-features">
+                            ${product.tags.map(tag => `<span class="feature-tag">${tag}</span>`).join('')}
+                        </div>
+                        <div class="product-footer">
+                            <span class="product-price">R$ ${product.price.toFixed(2)}</span>
+                            <button class="buy-btn">COMPRAR</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        loadProducts();
+    </script>
+</body>
+</html>

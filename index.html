@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORTEGA - Hub Infantil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4a4438 0%, #2d2922 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 3px solid #d4a03a;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .logo span {
+            color: #ff6b35;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #d4a03a;
+            transform: translateY(-2px);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #d4a03a;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%234a4438" width="1200" height="800"/><circle cx="200" cy="150" r="100" fill="%23d4a03a" opacity="0.1"/><circle cx="1000" cy="600" r="150" fill="%23ff6b35" opacity="0.1"/></svg>');
+            background-size: cover;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 20px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            color: #fff;
+        }
+
+        .hero h1 span {
+            color: #ff6b35;
+        }
+
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: #d4a03a;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
+        }
+
+        .categories {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 60px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .section-title span {
+            color: #ff6b35;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: #fff;
+            display: block;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(212, 160, 58, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .category-card:hover::before {
+            left: 100%;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            border-color: #d4a03a;
+            box-shadow: 0 15px 40px rgba(212, 160, 58, 0.3);
+        }
+
+        .category-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+        }
+
+        .category-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #d4a03a;
+        }
+
+        .category-card p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .products {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 100px 20px;
+        }
+
+        .products-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 35px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s;
+            border: 2px solid transparent;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #d4a03a;
+            box-shadow: 0 20px 40px rgba(212, 160, 58, 0.3);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(212, 160, 58, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+
+        .product-card:hover .product-image::before {
+            left: 100%;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .product-info {
+            padding: 25px;
+        }
+
+        .product-category {
+            color: #d4a03a;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .product-description {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .product-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.5);
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 3px solid #d4a03a;
+        }
+
+        footer p {
+            color: #ccc;
+            font-size: 16px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .nav-links {
+                gap: 15px;
+                font-size: 14px;
+            }
+
+            .section-title {
+                font-size: 36px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">ORTEGA <span>👑</span></div>
+            <ul class="nav-links">
+                <li><a href="#home">HOME</a></li>
+                <li><a href="#categorias">CATEGORIAS</a></li>
+                <li><a href="#produtos">PRODUTOS</a></li>
+                <li><a href="#contato">CONTATO</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="floating">ORTEGA <span>HUB INFANTIL</span></h1>
+            <p>🐺 Estilo e Qualidade para os Pequenos 🐺</p>
+            <a href="#categorias" class="btn">EXPLORAR COLEÇÃO</a>
+        </div>
+    </section>
+
+    <section id="categorias" class="categories">
+        <h2 class="section-title">Nossas <span>Categorias</span></h2>
+        <div class="category-grid">
+            <a href="camisas.html" class="category-card">
+                <div class="category-icon">👕</div>
+                <h3>CAMISAS</h3>
+                <p>Camisas oversized temáticas, Vans, DryFit e muito mais para os pequenos estilosos</p>
+            </a>
+            <a href="acessorios.html" class="category-card">
+                <div class="category-icon">🎒</div>
+                <h3>ACESSÓRIOS</h3>
+                <p>Bonés, mochilas temáticas e óculos para completar o visual</p>
+            </a>
+            <a href="calcados.html" class="category-card">
+                <div class="category-icon">👟</div>
+                <h3>CALÇADOS</h3>
+                <p>Kenner e outras marcas de qualidade para o conforto dos seus filhos</p>
+            </a>
+            <a href="bermudas.html" class="category-card">
+                <div class="category-icon">🩳</div>
+                <h3>BERMUDAS</h3>
+                <p>Bermudas cargo e conjuntos modernos para todas as ocasiões</p>
+            </a>
+        </div>
+    </section>
+
+    <section id="produtos" class="products">
+        <div class="products-container">
+            <h2 class="section-title">Produtos em <span>Destaque</span></h2>
+            <div class="products-grid">
+                </div>
+        </div>
+    </section>
+
+    <footer id="contato">
+        <p>🐺 ORTEGA - HUB INFANTIL 👑</p>
+        <p>Estilo, Qualidade e Conforto para seu Filho</p>
+        <p style="margin-top: 20px; color: #d4a03a;">© 2024 ORTEGA. Todos os direitos reservados.</p>
+        <p style="margin-top: 15px;"><a href="admin.html" style="color: #ff6b35; text-decoration: none; font-size: 14px; opacity: 0.7; transition: opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">🔐 Painel Administrativo</a></p>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Carregar produtos do storage
+        function loadProducts() {
+            try {
+                const stored = localStorage.getItem('ortega_products');
+                if (stored) {
+                    const products = JSON.parse(stored);
+                    
+                    // Exibir produtos em destaque (últimos 6 por data de criação)
+                    const sortedProducts = products.sort((a, b) => b.createdAt - a.createdAt);
+                    const featuredProducts = sortedProducts.slice(0, 6);
+                    if (featuredProducts.length > 0) {
+                        renderProducts(featuredProducts);
+                    } else {
+                         // Fallback se não houver produtos carregados
+                         document.querySelector('.products-grid').innerHTML = `
+                            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #999;">
+                                <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;">📦</div>
+                                <p>Nenhum produto em destaque encontrado.</p>
+                                <p style="margin-top: 10px; font-size: 14px;">Adicione produtos pelo <a href="admin.html" style="color: #ff6b35;">painel administrativo</a>!</p>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.log('Nenhum produto cadastrado ainda ou erro ao carregar.');
+                // Adiciona um estado vazio
+                document.querySelector('.products-grid').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #999;">
+                        <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;">📦</div>
+                        <p>Nenhum produto em destaque encontrado.</p>
+                        <p style="margin-top: 10px; font-size: 14px;">Adicione produtos pelo <a href="admin.html" style="color: #ff6b35;">painel administrativo</a>!</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderProducts(products) {
+            const container = document.querySelector('.products-grid');
+            if (products.length === 0) return;
+
+            const categoryEmojis = {
+                'camisas': '👕',
+                'acessorios': '🎒',
+                'calcados': '👟',
+                'bermudas': '🩳'
+            };
+            
+            // Certifica-se de que cada produto tem um link válido, mesmo que o arquivo não exista
+            function getProductHref(category) {
+                if (['camisas', 'acessorios', 'calcados', 'bermudas'].includes(category)) {
+                    return `${category}.html`;
+                }
+                return '#'; // Link de fallback
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="product-image">
+                        ${product.image && product.image.length > 200 ? `<img src="${product.image}" alt="${product.name}">` : categoryEmojis[product.category] || '📦'}
+                        ${products.indexOf(product) < 2 ? '<div class="product-badge">NOVO</div>' : ''}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">${(product.subcategory || product.category).toUpperCase()}</div>
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${product.description.substring(0, 60)}...</p>
+                        <div class="product-footer">
+                            <span class="product-price">R$ ${product.price.toFixed(2)}</span>
+                            <button class="view-btn" onclick="window.location.href='${getProductHref(product.category)}'">VER MAIS</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Animation observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.category-card, .product-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Carregar produtos ao iniciar
+        loadProducts();
+    </script>
+</body>
+</html>

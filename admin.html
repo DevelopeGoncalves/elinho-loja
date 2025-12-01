@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORTEGA - Painel Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4a4438 0%, #2d2922 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 3px solid #d4a03a;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 span {
+            color: #ff6b35;
+        }
+
+        .header p {
+            color: #d4a03a;
+            font-size: 18px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #d4a03a;
+            border-radius: 25px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .form-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(212, 160, 58, 0.3);
+            height: fit-content;
+            /* Corrigindo o 'sticky' CSS para 'position: sticky' e 'top: 20px' */
+            position: sticky; 
+            top: 20px;
+        }
+
+        .form-section h2 {
+            color: #ff6b35;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d4a03a;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(212, 160, 58, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        /* Corrigindo a cor do texto das opções do select para serem legíveis no fundo escuro */
+        .form-group select option {
+             background: #2d2922; 
+             color: #fff;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #d4a03a;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .image-upload {
+            position: relative;
+            border: 2px dashed #d4a03a;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(212, 160, 58, 0.05);
+        }
+
+        .image-upload:hover {
+            border-color: #ff6b35;
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .image-upload input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            width: 100%; /* Ajuste para preencher o container */
+            max-height: 200px;
+            object-fit: cover; /* Garante que a imagem preencha o espaço sem distorcer */
+            border-radius: 10px;
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .products-list {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(212, 160, 58, 0.3);
+        }
+
+        .products-list h2 {
+            color: #ff6b35;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .product-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .product-item:hover {
+            border-color: #d4a03a;
+            transform: translateY(-5px);
+        }
+
+        .product-item-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(212, 160, 58, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-item-info {
+            padding: 15px;
+        }
+
+        .product-item-category {
+            color: #d4a03a;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .product-item-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .product-item-price {
+            color: #ff6b35;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-btn, .delete-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .edit-btn {
+            background: rgba(212, 160, 58, 0.3);
+            color: #d4a03a;
+            border: 1px solid #d4a03a;
+        }
+
+        .edit-btn:hover {
+            background: #d4a03a;
+            color: #fff;
+        }
+
+        .delete-btn {
+            background: rgba(255, 77, 77, 0.3);
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+        }
+
+        .delete-btn:hover {
+            background: #ff4d4d;
+            color: #fff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            grid-column: 1 / -1; /* Ocupa todas as colunas */
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(212, 160, 58, 0.3);
+            border-radius: 20px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .filter-tab:hover, .filter-tab.active {
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            border-color: transparent;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+            display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 9999;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐺 ORTEGA <span>ADMIN</span> 👑</h1>
+            <p>Gerenciamento de Produtos</p>
+        </div>
+
+        <a href="index.html" class="back-btn">← Voltar para o Site</a>
+
+        <div class="main-content">
+            <div class="form-section">
+                <h2>📦 Adicionar Produto</h2>
+                <form id="productForm">
+                    <div class="form-group">
+                        <label>Nome do Produto *</label>
+                        <input type="text" id="productName" required placeholder="Ex: Camisa Oversized Super-Heróis">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categoria *</label>
+                        <select id="productCategory" required>
+                            <option value="">Selecione...</option>
+                            <option value="camisas">Camisas</option>
+                            <option value="acessorios">Acessórios</option>
+                            <option value="calcados">Calçados</option>
+                            <option value="bermudas">Bermudas</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subcategoria</label>
+                        <input type="text" id="productSubcategory" placeholder="Ex: Oversized, Vans, DryFit...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Preço (R$) *</label>
+                        <input type="number" id="productPrice" required step="0.01" min="0" placeholder="89.90">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descrição *</label>
+                        <textarea id="productDescription" required placeholder="Descreva o produto..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tags (separadas por vírgula)</label>
+                        <input type="text" id="productTags" placeholder="Ex: Premium, Confortável, Novo">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Imagem do Produto *</label>
+                        <div class="image-upload">
+                            <input type="file" id="productImage" accept="image/*"> 
+                            <div>📷 Clique para selecionar uma imagem</div>
+                            <small style="color: #999; display: block; margin-top: 10px;">JPG, PNG ou GIF (máx. 5MB)</small>
+                        </div>
+                        <img id="imagePreview" class="image-preview">
+                    </div>
+
+                    <button type="submit" class="submit-btn">✨ Adicionar Produto</button>
+                </form>
+            </div>
+
+            <div class="products-list">
+                <h2>📋 Produtos Cadastrados</h2>
+                
+                <div class="filter-tabs">
+                    <div class="filter-tab active" data-filter="all">Todos</div>
+                    <div class="filter-tab" data-filter="camisas">Camisas</div>
+                    <div class="filter-tab" data-filter="acessorios">Acessórios</div>
+                    <div class="filter-tab" data-filter="calcados">Calçados</div>
+                    <div class="filter-tab" data-filter="bermudas">Bermudas</div>
+                </div>
+
+                <div id="productsList" class="products-grid">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="successMessage" class="success-message">
+        ✅ Produto salvo com sucesso!
+    </div>
+
+    <script>
+        // ----------------------------------------------------
+        // VARIÁVEIS GLOBAIS
+        // ----------------------------------------------------
+        let products = [];
+        let currentFilter = 'all';
+        let editingProductId = null;
+        
+        // As funções de ação (edit/delete) precisam estar no escopo global (window)
+        // ou ser acessíveis diretamente pelo escopo do script, como estão.
+
+        // Imagem Base64 mínima para o placeholder (simulando uma imagem carregada)
+        const placeholderImageBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+
+        // ----------------------------------------------------
+        // DADOS INICIAIS (40 PRODUTOS)
+        // ----------------------------------------------------
+        const initialProductsData = [
+            // --- CAMISAS (10 Produtos) ---
+            { id: 'camisa_1', name: 'Camisa Oversized Dragon Ball', category: 'camisas', subcategory: 'OVERSIZED', price: 99.90, description: 'Camisa oversized de alta qualidade com estampa exclusiva de Dragon Ball Z. Conforto e estilo geek.', tags: ['Oversized', 'Dragon Ball', 'Algodão Premium', 'Novo'], image: placeholderImageBase64, createdAt: 1700000001000 },
+            { id: 'camisa_2', name: 'Camisa Vans Xadrez', category: 'camisas', subcategory: 'VANS', price: 129.90, description: 'Modelo clássico Vans com estampa xadrez. Perfeita para um visual skatista.', tags: ['Vans Original', 'Xadrez', 'Estilo Urbano'], image: placeholderImageBase64, createdAt: 1700000002000 },
+            { id: 'camisa_3', name: 'Camisa DryFit Corredor', category: 'camisas', subcategory: 'DRYFIT', price: 74.90, description: 'Tecido DryFit leve e respirável, ideal para corridas e atividades de alto impacto.', tags: ['DryFit', 'Respirável', 'Esportiva'], image: placeholderImageBase64, createdAt: 1700000003000 },
+            { id: 'camisa_4', name: 'Camisa Temática Espacial', category: 'camisas', subcategory: 'TEMÁTICAS', price: 84.90, description: 'Estampa vibrante de planetas e estrelas. 100% algodão para conforto máximo.', tags: ['Temática', 'Espaço', 'Algodão', 'Exclusiva'], image: placeholderImageBase64, createdAt: 1700000004000 },
+            { id: 'camisa_5', name: 'Camisa Oversized Minimalista', category: 'camisas', subcategory: 'OVERSIZED', price: 79.90, description: 'Design clean e minimalista, na moda streetwear. Tecido pesado de alta durabilidade.', tags: ['Minimalista', 'Streetwear', 'Premium'], image: placeholderImageBase64, createdAt: 1700000005000 },
+            { id: 'camisa_6', name: 'Camisa Vans Off The Wall', category: 'camisas', subcategory: 'VANS', price: 109.90, description: 'Clássica com o logo "Off The Wall". Essencial no guarda-roupa.', tags: ['Vans Original', 'Off The Wall', 'Clássica'], image: placeholderImageBase64, createdAt: 1700000006000 },
+            { id: 'camisa_7', name: 'Camisa DryFit Futebol', category: 'camisas', subcategory: 'DRYFIT', price: 69.90, description: 'Camisa esportiva com tecnologia DryFit, para manter o corpo seco durante o jogo.', tags: ['Futebol', 'DryFit', 'Performance'], image: placeholderImageBase64, createdAt: 1700000007000 },
+            { id: 'camisa_8', name: 'Camisa Temática Super Mario', category: 'camisas', subcategory: 'TEMÁTICAS', price: 92.90, description: 'Estampa licenciada do Super Mario. Diversão garantida para os fãs.', tags: ['Licenciada', 'Super Mario', 'Temática'], image: placeholderImageBase64, createdAt: 1700000008000 },
+            { id: 'camisa_9', name: 'Camisa Oversized Tie Dye', category: 'camisas', subcategory: 'OVERSIZED', price: 89.90, description: 'Modelagem ampla com estampa Tie Dye exclusiva. Estilo e conforto.', tags: ['Tie Dye', 'Oversized', 'Exclusiva'], image: placeholderImageBase64, createdAt: 1700000009000 },
+            { id: 'camisa_10', name: 'Camisa Vans Sk8 Hi Print', category: 'camisas', subcategory: 'VANS', price: 139.90, description: 'Estampa inspirada no icônico tênis Sk8-Hi. Para um visual completo Vans.', tags: ['Vans Original', 'Sk8-Hi', 'Estilosa'], image: placeholderImageBase64, createdAt: 1700000010000 },
+
+            // --- ACESSÓRIOS (10 Produtos) ---
+            { id: 'acessorios_1', name: 'Boné Baseball Camuflado', category: 'acessorios', subcategory: 'BONÉS', price: 59.90, description: 'Boné estilo baseball com estampa camuflada. Tira ajustável.', tags: ['Boné', 'Camuflado', 'Ajustável'], image: placeholderImageBase64, createdAt: 1700000011000 },
+            { id: 'acessorios_2', name: 'Mochila Fortnite Battle', category: 'acessorios', subcategory: 'MOCHILAS', price: 179.90, description: 'Mochila temática Fortnite. Resistente à água com compartimento para notebook.', tags: ['Fortnite', 'Mochila', 'Resistente'], image: placeholderImageBase64, createdAt: 1700000012000 },
+            { id: 'acessorios_3', name: 'Óculos de Sol Aviador Kids', category: 'acessorios', subcategory: 'ÓCULOS', price: 49.90, description: 'Óculos de sol estilo aviador com proteção UV400. Leve e confortável.', tags: ['Óculos', 'UV400', 'Aviador'], image: placeholderImageBase64, createdAt: 1700000013000 },
+            { id: 'acessorios_4', name: 'Carteira Spider-Man', category: 'acessorios', subcategory: 'OUTROS', price: 34.90, description: 'Carteira infantil temática do Homem-Aranha. Espaço para notas e moedas.', tags: ['Spider-Man', 'Carteira', 'Temática'], image: placeholderImageBase64, createdAt: 1700000014000 },
+            { id: 'acessorios_5', name: 'Boné Trucker Logo ORTEGA', category: 'acessorios', subcategory: 'BONÉS', price: 69.90, description: 'Boné estilo Trucker com o logo bordado ORTEGA. Respirável e estiloso.', tags: ['Trucker', 'Bordado', 'Estiloso'], image: placeholderImageBase64, createdAt: 1700000015000 },
+            { id: 'acessorios_6', name: 'Mochila Escolar Dinossauros', category: 'acessorios', subcategory: 'MOCHILAS', price: 159.90, description: 'Mochila escolar com estampa de dinossauros. Grande capacidade e conforto nas alças.', tags: ['Escolar', 'Dinossauros', 'Conforto'], image: placeholderImageBase64, createdAt: 1700000016000 },
+            { id: 'acessorios_7', name: 'Óculos de Sol Esportivo Polarizado', category: 'acessorios', subcategory: 'ÓCULOS', price: 79.90, description: 'Lentes polarizadas e armação esportiva. Ideal para atividades ao ar livre.', tags: ['Polarizado', 'Esportivo', 'Proteção'], image: placeholderImageBase64, createdAt: 1700000017000 },
+            { id: 'acessorios_8', name: 'Cinto de Lona Ajustável', category: 'acessorios', subcategory: 'OUTROS', price: 45.90, description: 'Cinto de lona militar ajustável, fivela de engate rápido. Várias cores.', tags: ['Lona', 'Ajustável', 'Militar'], image: placeholderImageBase64, createdAt: 1700000018000 },
+            { id: 'acessorios_9', name: 'Boné Aba Reta Game Over', category: 'acessorios', subcategory: 'BONÉS', price: 64.90, description: 'Boné de aba reta com tema gaming "Game Over". Para os pequenos jogadores.', tags: ['Aba Reta', 'Gaming', 'Moderno'], image: placeholderImageBase64, createdAt: 1700000019000 },
+            { id: 'acessorios_10', name: 'Mochila Rodinhas Patrulha Canina', category: 'acessorios', subcategory: 'MOCHILAS', price: 199.90, description: 'Mochila de rodinhas com estampa da Patrulha Canina. Alça retrátil reforçada.', tags: ['Rodinhas', 'Patrulha Canina', 'Escolar'], image: placeholderImageBase64, createdAt: 1700000020000 },
+            
+            // --- CALÇADOS (10 Produtos) ---
+            { id: 'calcados_1', name: 'Chinelo Kenner Summer Vibes', category: 'calcados', subcategory: 'KENNER', price: 89.90, description: 'Kenner com cores de verão. Solado tratorado antiderrapante.', tags: ['Kenner Original', 'Verão', 'Antiderrapante', 'Novo'], image: placeholderImageBase64, createdAt: 1700000021000 },
+            { id: 'calcados_2', name: 'Tênis Running Air Pro', category: 'calcados', subcategory: 'TÊNIS', price: 179.90, description: 'Tênis com amortecimento em gel e cabedal respirável. Ideal para esportes.', tags: ['Amortecimento Gel', 'Running', 'Respirável'], image: placeholderImageBase64, createdAt: 1700000022000 },
+            { id: 'calcados_3', name: 'Sandália Papete Croc Adventure', category: 'calcados', subcategory: 'SANDÁLIAS', price: 109.90, description: 'Papete estilo Crocs com fechamento em velcro. Secagem rápida e leve.', tags: ['Papete', 'Secagem Rápida', 'Ajustável'], image: placeholderImageBase64, createdAt: 1700000023000 },
+            { id: 'calcados_4', name: 'Chinelo Kenner Rakka', category: 'calcados', subcategory: 'KENNER', price: 119.90, description: 'Modelo Kenner Rakka em edição limitada. Design robusto e palmilha macia.', tags: ['Kenner Original', 'Rakka', 'Edição Limitada'], image: placeholderImageBase64, createdAt: 1700000024000 },
+            { id: 'calcados_5', name: 'Tênis Casual Cano Alto', category: 'calcados', subcategory: 'TÊNIS', price: 159.90, description: 'Tênis casual de cano alto. Estilo moderno para o dia a dia.', tags: ['Cano Alto', 'Casual', 'Moderno'], image: placeholderImageBase64, createdAt: 1700000025000 },
+            { id: 'calcados_6', name: 'Sandália Flatform Glitter', category: 'calcados', subcategory: 'SANDÁLIAS', price: 99.90, description: 'Sandália flatform com detalhes em glitter. Confortável e na moda.', tags: ['Flatform', 'Glitter', 'Moda Infantil'], image: placeholderImageBase64, createdAt: 1700000026000 },
+            { id: 'calcados_7', name: 'Chinelo Kenner Kivah', category: 'calcados', subcategory: 'KENNER', price: 109.90, description: 'Kenner linha Kivah, amortecimento e tiras em nylon. Aventura e conforto.', tags: ['Kenner Original', 'Kivah', 'Aventura'], image: placeholderImageBase64, createdAt: 1700000027000 },
+            { id: 'calcados_8', name: 'Tênis Skatista Pro', category: 'calcados', subcategory: 'TÊNIS', price: 189.90, description: 'Tênis com solado vulcanizado, durável para o skate e resistente.', tags: ['Skatista', 'Vulcanizado', 'Durável'], image: placeholderImageBase64, createdAt: 1700000028000 },
+            { id: 'calcados_9', name: 'Sandália Gladiadora Kids', category: 'calcados', subcategory: 'SANDÁLIAS', price: 89.90, description: 'Sandália estilo gladiadora. Super estilosa e segura no pé.', tags: ['Gladiadora', 'Estilosa', 'Segura'], image: placeholderImageBase64, createdAt: 1700000029000 },
+            { id: 'calcados_10', name: 'Tênis Casual Led Power', category: 'calcados', subcategory: 'TÊNIS', price: 199.90, description: 'Tênis com luzes de LED na sola. Recarregável via USB.', tags: ['LED', 'Recarregável', 'Exclusivo'], image: placeholderImageBase64, createdAt: 1700000030000 },
+
+            // --- BERMUDAS (10 Produtos) ---
+            { id: 'bermudas_1', name: 'Bermuda Cargo Camuflada', category: 'bermudas', subcategory: 'CARGO', price: 109.90, description: 'Bermuda cargo com estampa camuflada. Bolsos laterais funcionais.', tags: ['Cargo', 'Camuflada', 'Funcional', 'Novo'], image: placeholderImageBase64, createdAt: 1700000031000 },
+            { id: 'bermudas_2', name: 'Conjunto Moletom Summer', category: 'bermudas', subcategory: 'CONJUNTOS', price: 159.90, description: 'Conjunto de bermuda e camiseta em moletom leve. Ideal para o verão.', tags: ['Conjunto', 'Moletom Leve', 'Verão'], image: placeholderImageBase64, createdAt: 1700000032000 },
+            { id: 'bermudas_3', name: 'Bermuda Moletom Mescla', category: 'bermudas', subcategory: 'MOLETOM', price: 79.90, description: 'Bermuda em moletom mescla cinza. Cós com elástico e cordão.', tags: ['Moletom', 'Conforto', 'Casual'], image: placeholderImageBase64, createdAt: 1700000033000 },
+            { id: 'bermudas_4', name: 'Bermuda Jeans Destroyed', category: 'bermudas', subcategory: 'JEANS', price: 119.90, description: 'Jeans com lavagem moderna e detalhes destroyed. Ajuste perfeito.', tags: ['Jeans', 'Destroyed', 'Moderno'], image: placeholderImageBase64, createdAt: 1700000034000 },
+            { id: 'bermudas_5', name: 'Bermuda Cargo Caqui Slim', category: 'bermudas', subcategory: 'CARGO', price: 99.90, description: 'Bermuda cargo em sarja caqui com modelagem slim. Estilosa e versátil.', tags: ['Sarja', 'Caqui', 'Slim Fit'], image: placeholderImageBase64, createdAt: 1700000035000 },
+            { id: 'bermudas_6', name: 'Conjunto DryFit Basketball', category: 'bermudas', subcategory: 'CONJUNTOS', price: 149.90, description: 'Conjunto esportivo para basquete. DryFit que absorve o suor.', tags: ['DryFit', 'Basketball', 'Esportivo'], image: placeholderImageBase64, createdAt: 1700000036000 },
+            { id: 'bermudas_7', name: 'Bermuda Moletom Tie Dye', category: 'bermudas', subcategory: 'MOLETOM', price: 94.90, description: 'Moletom com estampa Tie Dye exclusiva. Super macia e colorida.', tags: ['Tie Dye', 'Moletom', 'Macio'], image: placeholderImageBase64, createdAt: 1700000037000 },
+            { id: 'bermudas_8', name: 'Bermuda Jeans Black', category: 'bermudas', subcategory: 'JEANS', price: 109.90, description: 'Jeans preto de alta durabilidade. Combina com tudo.', tags: ['Jeans Black', 'Durável', 'Clássica'], image: placeholderImageBase64, createdAt: 1700000038000 },
+            { id: 'bermudas_9', name: 'Bermuda Cargo Sarja Azul', category: 'bermudas', subcategory: 'CARGO', price: 89.90, description: 'Bermuda cargo em sarja azul marinho. Essencial para o dia a dia.', tags: ['Sarja', 'Cargo', 'Dia a Dia'], image: placeholderImageBase64, createdAt: 1700000039000 },
+            { id: 'bermudas_10', name: 'Conjunto Verão Estampado', category: 'bermudas', subcategory: 'CONJUNTOS', price: 139.90, description: 'Conjunto de bermuda e camisa estampada com tema tropical.', tags: ['Estampado', 'Tropical', 'Verão'], image: placeholderImageBase64, createdAt: 1700000040000 },
+        ];
+
+
+        // ----------------------------------------------------
+        // FUNÇÕES DE UTILIDADE (LOAD, SAVE, UI)
+        // ----------------------------------------------------
+
+        // Carregar produtos ao iniciar (MODIFICADA)
+        function loadProducts() {
+            try {
+                const stored = localStorage.getItem('ortega_products');
+                if (stored) {
+                    products = JSON.parse(stored);
+                } else {
+                    // Carrega os dados iniciais se não houver nada salvo
+                    products = initialProductsData;
+                    saveProducts(); // Salva os dados iniciais no localStorage
+                }
+                renderProducts(); // Renderiza a lista
+            } catch (error) {
+                console.error('Erro ao carregar produtos do localStorage:', error);
+                products = initialProductsData; // Usa os dados iniciais em caso de erro
+                renderProducts();
+            }
+        }
+
+        // Salvar produtos no localStorage
+        function saveProducts() {
+            localStorage.setItem('ortega_products', JSON.stringify(products));
+        }
+
+        function resetForm() {
+            document.getElementById('productForm').reset();
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imagePreview').src = ''; // Limpa a fonte da imagem
+            editingProductId = null;
+            document.querySelector('.submit-btn').textContent = '✨ Adicionar Produto';
+            
+            // Certifica-se de que o campo de arquivo está limpo
+            document.getElementById('productImage').value = ''; 
+        }
+
+        function showSuccess(message) {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.textContent = '✅ ' + message;
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        // Função de renderização principal (Corrigida para melhor manipulação do estado vazio)
+        function renderProducts() {
+            const container = document.getElementById('productsList');
+            
+            // Ordena os produtos pela data de criação, do mais novo para o mais antigo
+            const sortedProducts = products.sort((a, b) => b.createdAt - a.createdAt);
+            
+            const filteredProducts = currentFilter === 'all' 
+                ? sortedProducts 
+                : sortedProducts.filter(p => p.category === currentFilter);
+
+            if (filteredProducts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📦</div>
+                        <p>Nenhum produto cadastrado nesta categoria.</p>
+                        <p style="font-size: 14px; margin-top: 10px;">Adicione seu primeiro produto usando o formulário ao lado!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const categoryEmojis = {
+                'camisas': '👕',
+                'acessorios': '🎒',
+                'calcados': '👟',
+                'bermudas': '🩳'
+            };
+
+            container.innerHTML = filteredProducts.map(product => `
+                <div class="product-item">
+                    <div class="product-item-image">
+                        ${product.image && product.image.length > 200 ? `<img src="${product.image}" alt="${product.name}">` : categoryEmojis[product.category] || '📦'}
+                    </div>
+                    <div class="product-item-info">
+                        <div class="product-item-category">${product.subcategory || product.category.toUpperCase()}</div>
+                        <div class="product-item-name">${product.name}</div>
+                        <div class="product-item-price">R$ ${product.price.toFixed(2)}</div>
+                        <div class="product-item-actions">
+                            <button class="edit-btn" onclick="editProduct('${product.id}')">✏️ Editar</button>
+                            <button class="delete-btn" onclick="deleteProduct('${product.id}')">🗑️ Excluir</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // ----------------------------------------------------
+        // FUNÇÕES DE AÇÃO (CRUD)
+        // ----------------------------------------------------
+        
+        // Funções globais necessárias para o onclick no HTML
+        window.deleteProduct = function(id) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                try {
+                    products = products.filter(p => p.id !== id);
+                    saveProducts();
+                    renderProducts();
+                    showSuccess('Produto excluído!');
+                } catch (error) {
+                    alert('Erro ao excluir produto');
+                }
+            }
+        }
+
+        window.editProduct = function(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            editingProductId = id;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productSubcategory').value = product.subcategory || '';
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productDescription').value = product.description;
+            document.getElementById('productTags').value = product.tags.join(', ');
+            
+            if (product.image && product.image.length > 200) {
+                const preview = document.getElementById('imagePreview');
+                preview.src = product.image;
+                preview.style.display = 'block';
+            } else {
+                 document.getElementById('imagePreview').style.display = 'none';
+                 document.getElementById('imagePreview').src = '';
+            }
+
+            document.querySelector('.submit-btn').textContent = '💾 Atualizar Produto';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+
+        // ----------------------------------------------------
+        // LISTENERS DE EVENTOS
+        // ----------------------------------------------------
+
+        // Preview da imagem
+        document.getElementById('productImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Submeter formulário (CORRIGIDO: Adicionado 'async' na função e melhor validação de imagem)
+        document.getElementById('productForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const imageInput = document.getElementById('productImage');
+            const imageFile = imageInput.files[0];
+            
+            let imageData = null;
+
+            // Se for um novo produto, ou se uma nova imagem foi selecionada durante a edição
+            if (imageFile) {
+                // Usando Promise e async/await para garantir que a imagem seja lida antes de continuar
+                const reader = new FileReader();
+                imageData = await new Promise((resolve, reject) => {
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = (e) => reject(e);
+                    reader.readAsDataURL(imageFile);
+                });
+            } else if (editingProductId) {
+                // Se estiver editando e não houver nova imagem, mantém a imagem existente
+                imageData = products.find(p => p.id === editingProductId)?.image;
+            } else {
+                 // Novo produto sem imagem
+                alert('Por favor, selecione uma imagem para o novo produto!');
+                return;
+            }
+            
+            const product = {
+                id: editingProductId || 'product_' + Date.now(),
+                name: document.getElementById('productName').value,
+                category: document.getElementById('productCategory').value,
+                subcategory: document.getElementById('productSubcategory').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                description: document.getElementById('productDescription').value,
+                tags: document.getElementById('productTags').value.split(',').map(t => t.trim()).filter(t => t),
+                image: imageData,
+                createdAt: editingProductId ? products.find(p => p.id === editingProductId)?.createdAt : Date.now()
+            };
+
+            // Se for um novo produto, garanta que a imagem base64 é válida
+            if (!editingProductId && (!product.image || product.image.length < 200)) {
+                 alert('Falha ao processar a imagem. Tente novamente.');
+                 return;
+            }
+
+            try {
+                if (editingProductId) {
+                    const index = products.findIndex(p => p.id === editingProductId);
+                    if (index !== -1) {
+                         products[index] = product;
+                    }
+                    showSuccess('Produto atualizado!');
+                } else {
+                    products.push(product);
+                    showSuccess('Produto adicionado!');
+                }
+
+                saveProducts();
+                resetForm();
+                renderProducts();
+            } catch (error) {
+                alert('Erro ao salvar produto no localStorage: ' + error.message);
+                console.error(error);
+            }
+        });
+
+
+        // Filtros
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.filter;
+                renderProducts();
+            });
+        });
+
+        // ----------------------------------------------------
+        // INICIALIZAÇÃO
+        // ----------------------------------------------------
+        
+        loadProducts(); // Carrega produtos e renderiza a lista ao iniciar
+    </script>
+</body>
+</html>
