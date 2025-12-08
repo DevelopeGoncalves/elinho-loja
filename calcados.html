@@ -134,6 +134,9 @@
             border: 2px solid transparent;
             cursor: pointer;
             backdrop-filter: blur(10px);
+            /* Correção para o footer funcionar */
+            display: flex;
+            flex-direction: column;
         }
 
         .product-card:hover {
@@ -190,6 +193,7 @@
 
         .product-info {
             padding: 25px;
+            flex-grow: 1;
         }
 
         .product-category {
@@ -234,8 +238,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0 25px 25px;
+            border-top: none; 
         }
 
         .product-price {
@@ -254,11 +258,24 @@
             cursor: pointer;
             transition: all 0.3s;
         }
+        
+        /* Novo estilo para o botão do carrinho */
+        .add-to-cart-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #d4a03a, #ff6b35);
+            border: none;
+            border-radius: 25px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
 
-        .buy-btn:hover {
+        .add-to-cart-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(255, 107, 53, 0.5);
         }
+
 
         footer {
             background: rgba(0, 0, 0, 0.7);
@@ -314,6 +331,56 @@
     </footer>
 
     <script>
+        // --- FUNÇÕES DE CARRINHO (Adicionadas/Adaptadas) ---
+        function loadCartCount() {
+            try {
+                const cart = JSON.parse(localStorage.getItem('ortega_cart') || '[]');
+                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                return totalItems; 
+            } catch (e) {
+                return 0;
+            }
+        }
+        
+        window.addToCart = function(productId, productName) {
+            try {
+                const storedProducts = JSON.parse(localStorage.getItem('ortega_products') || '[]');
+                const product = storedProducts.find(p => p.id === productId);
+
+                if (!product) {
+                    alert('Produto não encontrado!');
+                    return;
+                }
+                
+                let cart = JSON.parse(localStorage.getItem('ortega_cart') || '[]');
+                const cartItemId = productId; 
+                const existingItem = cart.find(item => item.cartId === cartItemId);
+
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({ 
+                        cartId: cartItemId,
+                        id: productId, 
+                        name: productName, 
+                        price: product.price, 
+                        quantity: 1, 
+                        image: product.image, 
+                        category: product.category, 
+                        subcategory: product.subcategory 
+                    });
+                }
+
+                localStorage.setItem('ortega_cart', JSON.stringify(cart));
+                alert(`🛒 ${productName} adicionado ao carrinho! Total no carrinho: ${loadCartCount()}`);
+
+            } catch (e) {
+                console.error("Erro ao adicionar ao carrinho:", e);
+                alert('Erro ao adicionar item ao carrinho. Tente novamente.');
+            }
+        };
+
+        // --- FUNÇÕES DA LOJA (Mantidas) ---
         const filterBtns = document.querySelectorAll('.filter-btn');
         let currentFilter = 'TODOS';
         let allProducts = [];
@@ -333,9 +400,7 @@
                 const stored = localStorage.getItem('ortega_products');
                 if (stored) {
                     const products = JSON.parse(stored);
-                    // Filtra apenas os produtos desta categoria
                     allProducts = products.filter(p => p.category === 'calcados');
-                    // Ordena do mais novo para o mais antigo (opcional, mas bom para destaque)
                     allProducts.sort((a, b) => b.createdAt - a.createdAt);
                     renderProducts();
                 } else {
@@ -364,7 +429,6 @@
             let filtered = allProducts;
             if (currentFilter !== 'TODOS') {
                 filtered = allProducts.filter(p => 
-                    // Garante que o subcategory exista e inclua o filtro atual (case insensitive)
                     p.subcategory && p.subcategory.toUpperCase().includes(currentFilter)
                 );
             }
@@ -374,23 +438,26 @@
                 return;
             }
 
+            // CORREÇÃO: Estrutura para linkar o card e manter o botão de carrinho
             container.innerHTML = filtered.map((product, index) => `
                 <div class="product-card">
-                    <div class="product-image">
-                        ${product.image && product.image.length > 200 ? `<img src="${product.image}" alt="${product.name}">` : '👟'}
-                        ${index === 0 ? '<div class="product-badge">NOVO</div>' : (index === 1 ? '<div class="product-badge">DESTAQUE</div>' : '')}
-                    </div>
-                    <div class="product-info">
-                        <div class="product-category">${(product.subcategory || 'CALÇADO').toUpperCase()}</div>
-                        <h3 class="product-name">${product.name}</h3>
-                        <p class="product-description">${product.description}</p>
-                        <div class="product-features">
-                            ${product.tags.map(tag => `<span class="feature-tag">${tag}</span>`).join('')}
+                    <a href="produto.html?id=${product.id}" style="text-decoration: none; color: inherit; flex-grow: 1;">
+                        <div class="product-image">
+                            ${product.image && product.image.length > 200 ? `<img src="${product.image}" alt="${product.name}">` : '👟'}
+                            ${index === 0 ? '<div class="product-badge">NOVO</div>' : (index === 1 ? '<div class="product-badge">DESTAQUE</div>' : '')}
                         </div>
-                        <div class="product-footer">
-                            <span class="product-price">R$ ${product.price.toFixed(2)}</span>
-                            <button class="buy-btn">COMPRAR</button>
+                        <div class="product-info">
+                            <div class="product-category">${(product.subcategory || 'CALÇADO').toUpperCase()}</div>
+                            <h3 class="product-name">${product.name}</h3>
+                            <p class="product-description">${product.description}</p>
+                            <div class="product-features">
+                                ${product.tags.map(tag => `<span class="feature-tag">${tag}</span>`).join('')}
+                            </div>
                         </div>
+                    </a>
+                    <div class="product-footer">
+                        <span class="product-price">R$ ${product.price.toFixed(2)}</span>
+                        <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${product.id}', '${product.name}')">ADICIONAR 🛒</button>
                     </div>
                 </div>
             `).join('');

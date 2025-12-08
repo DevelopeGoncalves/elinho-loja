@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORTEGA - Finalizar Compra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #4a4438 0%, #2d2922 100%);
+            color: #fff;
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 3px solid #ff6b35;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            padding: 0 20px;
+        }
+
+        .logo span {
+            color: #d4a03a;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 20px;
+            display: flex;
+            gap: 30px;
+        }
+
+        .checkout-main {
+            flex: 2;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .checkout-summary {
+            flex: 1;
+            background: rgba(212, 160, 58, 0.1);
+            border: 1px solid #d4a03a;
+            border-radius: 20px;
+            padding: 20px;
+            height: fit-content;
+        }
+
+        h1 {
+            color: #ff6b35;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* --- Stepper (Passos) --- */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding: 0 10px;
+        }
+
+        .step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+            color: #999;
+            font-weight: bold;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background: #4a4438;
+            border: 3px solid #999;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            transition: all 0.3s;
+        }
+
+        .step-label {
+            font-size: 14px;
+        }
+
+        .step.active .step-icon {
+            background: #d4a03a;
+            border-color: #d4a03a;
+            color: #2d2922;
+        }
+
+        .step.completed .step-icon {
+            background: #ff6b35;
+            border-color: #ff6b35;
+            color: #fff;
+        }
+
+        .step-separator {
+            position: absolute;
+            height: 3px;
+            background: #999;
+            width: 100%;
+            top: 18px;
+            left: -50%;
+            z-index: -1;
+        }
+
+        .step:not(:first-child) .step-separator {
+            background: linear-gradient(to right, #999, #999);
+        }
+
+        .step.completed:not(:first-child) .step-separator {
+            background: #ff6b35;
+        }
+        
+        .step.completed {
+             color: #d4a03a;
+        }
+
+        /* --- Conteúdo dos Passos --- */
+        .step-content {
+            display: none;
+            padding: 20px 0;
+        }
+        
+        .step-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d4a03a;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(212, 160, 58, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+        }
+        
+        .form-group select option {
+             background: #2d2922; 
+             color: #fff;
+        }
+        
+        .form-group.half-width {
+            display: inline-block;
+            width: calc(50% - 10px);
+            margin-right: 15px;
+        }
+        
+        .form-group.half-width:last-child {
+            margin-right: 0;
+        }
+        
+        /* --- Botões de Navegação --- */
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn.prev {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 2px solid #d4a03a;
+        }
+
+        .nav-btn.prev:hover {
+            background: #d4a03a;
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            color: #fff;
+        }
+
+        .nav-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.5);
+        }
+        
+        .nav-btn:disabled {
+            background: #555 !important;
+            color: #ccc !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+            transform: none !important;
+            border: none;
+        }
+
+        /* --- Resumo do Pedido --- */
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+        }
+        
+        .summary-item:last-of-type {
+            border-bottom: none;
+        }
+
+        .summary-total {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #d4a03a;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff6b35;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Frete e Pagamento no Resumo */
+        .summary-frete, .summary-pagamento {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .summary-frete span.valor, .summary-pagamento span.valor {
+            color: #d4a03a;
+            font-weight: bold;
+        }
+        
+        /* Opções de Frete (Passo 2) */
+        .shipping-option {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .shipping-option.selected {
+            border-color: #ff6b35;
+            background: rgba(255, 107, 53, 0.1);
+        }
+        
+        .shipping-option strong {
+            color: #d4a03a;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .shipping-option small {
+            color: #ccc;
+        }
+        
+        /* Opções de Pagamento (Passo 3) */
+        .payment-option {
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-option.selected {
+             border-color: #ff6b35;
+             background: rgba(255, 107, 53, 0.1);
+        }
+        
+        .payment-option label {
+            font-weight: bold;
+            color: #d4a03a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .payment-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            font-size: 14px;
+        }
+        
+        .payment-details p {
+            margin-bottom: 10px;
+        }
+        
+        /* Confirmação (Passo 4 - Finalizar) */
+        .confirmation-box {
+            text-align: center;
+            padding: 40px;
+            background: rgba(212, 160, 58, 0.1);
+            border: 2px solid #d4a03a;
+            border-radius: 15px;
+        }
+        
+        .confirmation-box h2 {
+            color: #4caf50; /* Verde de sucesso */
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .confirmation-box p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        
+        .back-to-home-btn {
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            color: #fff;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .back-to-home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .checkout-main, .checkout-summary {
+                flex: 1;
+                width: 100%;
+            }
+            .stepper {
+                font-size: 12px;
+            }
+            .step-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+            .step-separator {
+                top: 13px;
+            }
+            .form-group.half-width {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">ORTEGA <span>CHECKOUT</span></a>
+    </header>
+
+    <div class="container">
+        <div class="checkout-main">
+            <h1>Finalizar Compra</h1>
+
+            <div class="stepper">
+                <div class="step active" data-step="1">
+                    <div class="step-icon">1</div>
+                    <div class="step-label">Endereço</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-separator"></div>
+                    <div class="step-icon">2</div>
+                    <div class="step-label">Frete</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-separator"></div>
+                    <div class="step-icon">3</div>
+                    <div class="step-label">Pagamento</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-separator"></div>
+                    <div class="step-icon">4</div>
+                    <div class="step-label">Confirmação</div>
+                </div>
+            </div>
+
+            <form id="checkoutForm">
+                
+                <div class="step-content active" data-step="1">
+                    <h2 style="color: #d4a03a; margin-bottom: 20px;">1. Destino do Envio</h2>
+                    <div class="form-group">
+                        <label for="cep">CEP *</label>
+                        <input type="text" id="cep" required placeholder="00000-000">
+                    </div>
+                    <div class="form-group half-width">
+                        <label for="endereco">Endereço *</label>
+                        <input type="text" id="endereco" required placeholder="Rua, Avenida, etc.">
+                    </div>
+                    <div class="form-group half-width">
+                        <label for="numero">Número *</label>
+                        <input type="text" id="numero" required placeholder="123">
+                    </div>
+                    <div class="form-group half-width">
+                        <label for="bairro">Bairro *</label>
+                        <input type="text" id="bairro" required placeholder="Ex: Centro">
+                    </div>
+                    <div class="form-group half-width">
+                        <label for="complemento">Complemento</label>
+                        <input type="text" id="complemento" placeholder="Apto, Bloco">
+                    </div>
+                    <div class="form-group half-width">
+                        <label for="cidade">Cidade *</label>
+                        <input type="text" id="cidade" required placeholder="Ex: São Paulo">
+                    </div>
+                    <div class="form-group half-width">
+                        <label for="estado">Estado *</label>
+                        <input type="text" id="estado" required placeholder="Ex: SP">
+                    </div>
+                    <div class="navigation-buttons">
+                        <button type="button" class="nav-btn prev" disabled>VOLTAR</button>
+                        <button type="button" class="nav-btn next" onclick="nextStep(1)">IR PARA O FRETE</button>
+                    </div>
+                </div>
+
+                <div class="step-content" data-step="2">
+                    <h2 style="color: #d4a03a; margin-bottom: 20px;">2. Selecione o Frete</h2>
+                    <p style="color: #ccc; margin-bottom: 20px;">O cálculo abaixo é simulado. Em um e-commerce real, ele seria feito por transportadoras.</p>
+
+                    <div id="shipping-options-list">
+                        <div class="shipping-option" data-service="sedex" data-price="25.90" data-name="SEDEX" onclick="selectShipping(this)">
+                            <strong>🚚 SEDEX (3-5 dias úteis)</strong>
+                            <span class="summary-price" style="float: right;">R$ 25,90</span>
+                            <small>Serviço rápido e com rastreio completo.</small>
+                        </div>
+                        <div class="shipping-option" data-service="pac" data-price="15.50" data-name="PAC" onclick="selectShipping(this)">
+                            <strong>📦 PAC (7-12 dias úteis)</strong>
+                            <span class="summary-price" style="float: right;">R$ 15,50</span>
+                            <small>Opção econômica dos Correios.</small>
+                        </div>
+                        <div class="shipping-option" data-service="retirada" data-price="0.00" data-name="Retirada na Loja" onclick="selectShipping(this)">
+                            <strong>📍 Retirada na Loja (Grátis)</strong>
+                            <span class="summary-price" style="float: right;">GRÁTIS</span>
+                            <small>Retire em nosso endereço: Rua Exemplo, 400 - Centro.</small>
+                        </div>
+                    </div>
+                    <div class="navigation-buttons">
+                        <button type="button" class="nav-btn prev" onclick="prevStep(2)">← ENDEREÇO</button>
+                        <button type="button" class="nav-btn next" id="shipping-next-btn" disabled>IR PARA O PAGAMENTO</button>
+                    </div>
+                </div>
+                
+                <div class="step-content" data-step="3">
+                    <h2 style="color: #d4a03a; margin-bottom: 20px;">3. Informações de Pagamento</h2>
+                    <p style="color: #ccc; margin-bottom: 20px;">Abaixo, simulações de métodos de pagamento (Não processam dados reais).</p>
+
+                    <div class="payment-option" data-method="pix" data-name="PIX" onclick="selectPayment(this)">
+                        <label>
+                            <input type="radio" name="payment-method" value="pix" style="transform: scale(1.5);">
+                            PIX Instantâneo
+                        </label>
+                        <div class="payment-details">
+                            <p>Desconto de 5% no total do pedido. A chave PIX será exibida na tela de confirmação.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-option" data-method="credit-card" data-name="Cartão de Crédito" onclick="selectPayment(this)">
+                        <label>
+                            <input type="radio" name="payment-method" value="credit-card" style="transform: scale(1.5);">
+                            Cartão de Crédito
+                        </label>
+                        <div class="payment-details">
+                            <p>Simulação: Em um sistema real, aqui você preencheria os dados do cartão (número, validade, CVV).</p>
+                            <div class="form-group">
+                                <label for="installments">Parcelamento</label>
+                                <select id="installments">
+                                    <option value="1">1x sem juros</option>
+                                    <option value="2">2x sem juros</option>
+                                    <option value="3">3x sem juros</option>
+                                    <option value="6">6x com juros</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="nav-btn prev" onclick="prevStep(3)">← FRETE</button>
+                        <button type="button" class="nav-btn next" id="payment-next-btn" disabled onclick="nextStep(3)">REVISAR PEDIDO</button>
+                    </div>
+                </div>
+
+                <div class="step-content" data-step="4">
+                    <h2 style="color: #d4a03a; margin-bottom: 20px;">4. Revisão e Confirmação</h2>
+                    <p style="color: #ccc; margin-bottom: 30px;">Revise seus dados antes de enviar o pedido.</p>
+                    
+                    <div class="confirmation-box">
+                        <h2>✅ Pedido Feito!</h2>
+                        <p>Obrigado pela sua compra na ORTEGA. Você receberá um e-mail com os detalhes.</p>
+                        <a href="index.html" class="back-to-home-btn">VOLTAR PARA A LOJA</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="checkout-summary">
+            <h2 style="color: #ff6b35; margin-bottom: 20px;">Sumário da Compra</h2>
+            <div id="summary-items">
+                </div>
+            
+            <div class="summary-frete">
+                Frete: <span id="summary-shipping-name" style="float: right;">...</span>
+                <span id="summary-shipping-price" class="valor" style="float: right; margin-left: 10px;">R$ 0,00</span>
+            </div>
+            
+            <div class="summary-pagamento">
+                Pagamento: <span id="summary-payment-method" style="float: right;">...</span>
+            </div>
+
+            <div class="summary-total">
+                <span>TOTAL FINAL:</span>
+                <span id="summary-final-total">R$ 0,00</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let cartItems = [];
+        let subtotal = 0;
+        let selectedShipping = { service: '', price: 0.00, name: 'Selecione' };
+        let selectedPayment = { method: '', name: 'Selecione' };
+
+        // --- FUNÇÕES DE NAVEGAÇÃO ---
+        
+        // CORREÇÃO: Variável para o botão de frete
+        const shippingNextBtn = document.getElementById('shipping-next-btn');
+
+        function updateStepper(step) {
+            document.querySelectorAll('.step').forEach(s => {
+                const stepNum = parseInt(s.getAttribute('data-step'));
+                s.classList.remove('active', 'completed');
+                
+                if (stepNum < step) {
+                    s.classList.add('completed');
+                } else if (stepNum === step) {
+                    s.classList.add('active');
+                }
+            });
+            
+            document.querySelectorAll('.step-content').forEach(c => {
+                c.classList.remove('active');
+            });
+            document.querySelector(`.step-content[data-step="${step}"]`).classList.add('active');
+            
+            // Reabilita/desabilita botões conforme necessário
+            if (step === 2 && selectedShipping.service === '') {
+                shippingNextBtn.disabled = true;
+            } else if (step === 2) {
+                shippingNextBtn.disabled = false;
+            }
+        }
+
+        function nextStep(current) {
+            if (current === 1) {
+                // Validação básica do Endereço
+                if (!document.getElementById('cep').value || !document.getElementById('endereco').value) {
+                    alert("Preencha todos os campos obrigatórios do endereço!");
+                    return;
+                }
+            } else if (current === 2) {
+                // Validação do Frete
+                if (selectedShipping.service === '') {
+                    alert("Selecione uma opção de frete!");
+                    return;
+                }
+            } else if (current === 3) {
+                 // Validação do Pagamento
+                if (selectedPayment.method === '') {
+                    alert("Selecione um método de pagamento!");
+                    return;
+                }
+            }
+            
+            currentStep = current + 1;
+            updateStepper(currentStep);
+            
+            // Simulação de finalização para o Passo 4
+            if (currentStep === 4) {
+                 // Em um e-commerce real, aqui você enviaria os dados
+                 // do pedido (endereço, frete, pagamento, itens) para o servidor.
+                 // Simulamos que o pedido foi enviado e limpamos o carrinho.
+                 localStorage.removeItem('ortega_cart');
+                 alert("SUCESSO: Seu pedido foi finalizado! (Dados do carrinho foram limpos)");
+            }
+        }
+
+        function prevStep(current) {
+            currentStep = current - 1;
+            updateStepper(currentStep);
+        }
+        
+        // --- FUNÇÕES DE RESUMO E CÁLCULO ---
+        
+        function calculateFinalTotal() {
+            let finalTotal = subtotal;
+            let totalFrete = selectedShipping.price;
+            let descontoPix = 0;
+            
+            // Aplica Frete
+            finalTotal += totalFrete;
+            
+            // Aplica desconto (SIMULAÇÃO)
+            if (selectedPayment.method === 'pix') {
+                descontoPix = subtotal * 0.05; // 5% de desconto no subtotal
+                finalTotal -= descontoPix;
+            }
+            
+            document.getElementById('summary-shipping-name').textContent = selectedShipping.name;
+            document.getElementById('summary-shipping-price').textContent = `R$ ${totalFrete.toFixed(2).replace('.', ',')}`;
+            document.getElementById('summary-payment-method').textContent = selectedPayment.name;
+            document.getElementById('summary-final-total').textContent = `R$ ${finalTotal.toFixed(2).replace('.', ',')}`;
+        }
+        
+        // --- FUNÇÕES DE INTERAÇÃO DO USUÁRIO ---
+
+        function selectShipping(element) {
+            document.querySelectorAll('.shipping-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            selectedShipping = {
+                service: element.getAttribute('data-service'),
+                price: parseFloat(element.getAttribute('data-price')),
+                name: element.getAttribute('data-name') 
+            };
+            
+            // Habilita o botão após a seleção
+            shippingNextBtn.disabled = false;
+            shippingNextBtn.onclick = () => nextStep(2); // Garante a função
+            calculateFinalTotal();
+        }
+        
+        function selectPayment(element) {
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const radio = element.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+
+            selectedPayment = { 
+                method: element.getAttribute('data-method'),
+                name: element.getAttribute('data-name') 
+            };
+            
+            // Habilita o botão após a seleção
+            document.getElementById('payment-next-btn').disabled = false;
+            calculateFinalTotal();
+        }
+
+        // --- INICIALIZAÇÃO E CARREGAMENTO DE DADOS ---
+
+        function loadCartForCheckout() {
+            try {
+                cartItems = JSON.parse(localStorage.getItem('ortega_cart') || '[]');
+                if (cartItems.length === 0) {
+                    alert("Seu carrinho está vazio! Redirecionando para a loja.");
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                const summaryDiv = document.getElementById('summary-items');
+                summaryDiv.innerHTML = '';
+                subtotal = 0;
+                
+                cartItems.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    
+                    const div = document.createElement('div');
+                    div.classList.add('summary-item');
+                    div.innerHTML = `
+                        <span>${item.name} (x${item.quantity})</span>
+                        <span>R$ ${itemTotal.toFixed(2).replace('.', ',')}</span>
+                    `;
+                    summaryDiv.appendChild(div);
+                });
+                
+                calculateFinalTotal();
+
+            } catch (e) {
+                console.error("Erro ao carregar dados do carrinho para o checkout:", e);
+                alert("Erro grave ao carregar carrinho. Tente novamente mais tarde.");
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Event Listeners para garantir a função global
+        window.nextStep = nextStep;
+        window.prevStep = prevStep;
+        window.selectShipping = selectShipping;
+        window.selectPayment = selectPayment;
+        
+        // Carregar carrinho e iniciar o stepper
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCartForCheckout();
+            updateStepper(currentStep);
+            
+            // Garante que o botão next do frete tenha o listener
+            shippingNextBtn.addEventListener('click', () => nextStep(2));
+        });
+    </script>
+</body>
+</html>
