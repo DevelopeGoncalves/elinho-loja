@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORTEGA - Painel Administrativo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #4a4438 0%, #2d2922 100%);
+            color: #fff;
+            padding-top: 80px;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 3px solid #d4a03a;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: #ff6b35;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #d4a03a;
+            text-align: center;
+        }
+
+        .tab-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(212, 160, 58, 0.3);
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            border: none;
+            background: transparent;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            color: #ff6b35;
+        }
+
+        .tab-btn.active {
+            color: #d4a03a;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #d4a03a;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tabela de Pedidos */
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .orders-table th, .orders-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .orders-table th {
+            background: rgba(212, 160, 58, 0.2);
+            color: #d4a03a;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-badge.pending { background: #ff6b35; }
+        .status-badge.shipped { background: #d4a03a; }
+        .status-badge.delivered { background: #5cb85c; }
+
+        .action-btn {
+            padding: 8px 15px;
+            background: #ff6b35;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-right: 5px;
+        }
+
+        .action-btn.invoice { background: #d4a03a; }
+        .action-btn.track { background: #3498db; }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+        
+        /* Formulário de Frete */
+        .shipping-form, .product-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .shipping-form label, .product-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d4a03a;
+            font-weight: bold;
+        }
+
+        .shipping-form input, .shipping-form select, .product-form input, .product-form select, .product-form textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #d4a03a;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            box-sizing: border-box;
+        }
+        
+        .shipping-form button {
+            grid-column: span 2;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff6b35, #d4a03a);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .shipping-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.6);
+        }
+
+        #shipping-result {
+            grid-column: span 2;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(212, 160, 58, 0.1);
+            border: 1px solid #d4a03a;
+            border-radius: 8px;
+            color: #fff;
+        }
+        
+        .product-form button {
+             grid-column: span 2;
+            padding: 15px;
+            background: linear-gradient(135deg, #d4a03a, #ff6b35);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .product-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 160, 58, 0.6);
+        }
+        
+        /* Estilos específicos para o formulário de Adição de Produto */
+        .product-form div {
+            grid-column: span 1; 
+        }
+
+        .product-form textarea {
+            grid-column: span 2;
+            resize: vertical;
+        }
+        
+        .product-form .full-row {
+            grid-column: span 2;
+        }
+
+        .message {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            background-color: #5cb85c;
+            color: white;
+            display: none;
+        }
+        
+        /* Estilo para a imagem de pré-visualização (opcional) */
+        #product-image-preview {
+            max-width: 100%;
+            height: 100px;
+            object-fit: contain;
+            display: block;
+            margin: 10px 0;
+            border: 1px dashed #d4a03a;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">ORTEGA <span>👑</span></a>
+            <a href="index.html" style="color: #fff; text-decoration: none; font-weight: bold;">← Voltar para a Loja</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>🔐 Painel Administrativo</h1>
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="pedidos">Gestão de Pedidos</button>
+                <button class="tab-btn" data-tab="frete">Simulador de Frete</button>
+                <button class="tab-btn" data-tab="produtos">Adicionar Produto</button>
+            </div>
+
+            <div id="pedidos" class="tab-content active">
+                <p style="margin-bottom: 20px; color: #ccc;">A tabela abaixo é uma **simulação** de dados. Em um sistema real, esses dados viriam de um banco de dados no back-end.</p>
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Cliente</th>
+                            <th>Valor Total</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-list">
+                        </tbody>
+                </table>
+            </div>
+
+            <div id="frete" class="tab-content">
+                <p style="margin-bottom: 20px; color: #ccc;">Simulador de frete para calcular custos e prazos. **Não está conectado a serviços reais (Correios, etc.).**</p>
+                <form id="shipping-form" class="shipping-form">
+                    <div>
+                        <label for="cep-origem">CEP de Origem</label>
+                        <input type="text" id="cep-origem" value="29010-000" required>
+                    </div>
+                    <div>
+                        <label for="cep-destino">CEP de Destino</label>
+                        <input type="text" id="cep-destino" value="01001-000" required>
+                    </div>
+                    <div>
+                        <label for="peso">Peso (kg)</label>
+                        <input type="number" id="peso" value="0.5" step="0.1" required>
+                    </div>
+                    <div>
+                        <label for="servico">Serviço</label>
+                        <select id="servico" required>
+                            <option value="pac">PAC</option>
+                            <option value="sedex">SEDEX</option>
+                            <option value="transportadora">Transportadora Local</option>
+                        </select>
+                    </div>
+                    <button type="submit">CALCULAR FRETE</button>
+                    <div id="shipping-result">Preencha os dados e clique em calcular para simular o valor do frete.</div>
+                </form>
+            </div>
+            
+            <div id="produtos" class="tab-content">
+                <div id="product-message" class="message">Produto adicionado com sucesso!</div>
+                <p style="margin-bottom: 20px; color: #ccc;">Adicione novos produtos para que apareçam na loja. Os dados são salvos no **localStorage** do seu navegador.</p>
+                <form id="add-product-form" class="product-form">
+                    <div>
+                        <label for="product-name">Nome do Produto</label>
+                        <input type="text" id="product-name" required>
+                    </div>
+                    <div>
+                        <label for="product-price">Preço (R$)</label>
+                        <input type="number" id="product-price" step="0.01" required>
+                    </div>
+                    <div>
+                        <label for="product-category">Categoria</label>
+                        <select id="product-category" required>
+                            <option value="camisas">Camisas</option>
+                            <option value="acessorios">Acessórios</option>
+                            <option value="calcados">Calçados</option>
+                            <option value="bermudas">Bermudas</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="product-subcategory">Subcategoria (Ex: CARGO, VANS)</label>
+                        <input type="text" id="product-subcategory">
+                    </div>
+                    <div class="full-row">
+                        <label for="product-description">Descrição Curta</label>
+                        <textarea id="product-description" maxlength="100" required></textarea>
+                    </div>
+                    <div class="full-row">
+                        <label for="product-image-file">Imagem do Produto (Base64)</label>
+                        <input type="file" id="product-image-file" accept="image/*">
+                        <img id="product-image-preview" src="" alt="Pré-visualização" style="display: none;">
+                    </div>
+                    <button type="submit">ADICIONAR PRODUTO</button>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- Tab Navigation ---
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const tabId = e.target.getAttribute('data-tab');
+                
+                // Remove active class from all buttons and contents
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active class to the clicked button and corresponding content
+                e.target.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+
+        // --- Gestão de Pedidos (Simulado) ---
+        const simulatedOrders = [
+            { id: 'O2024001', client: 'Ana Silva', total: 189.90, status: 'shipped', tracking: 'BR123456789' },
+            { id: 'O2024002', client: 'Bruno Costa', total: 549.50, status: 'delivered', tracking: 'BR987654321' },
+            { id: 'O2024003', client: 'Carla Dias', total: 79.99, status: 'pending', tracking: null },
+            { id: 'O2024004', client: 'Daniel Mendes', total: 299.00, status: 'shipped', tracking: 'BR112233445' },
+        ];
+
+        function renderOrders() {
+            const list = document.getElementById('orders-list');
+            list.innerHTML = ''; // Limpa a lista
+
+            simulatedOrders.forEach(order => {
+                const row = document.createElement('tr');
+                const formattedTotal = `R$ ${order.total.toFixed(2).replace('.', ',')}`;
+                
+                let statusText;
+                let statusClass;
+                switch(order.status) {
+                    case 'pending': statusText = 'Pendente'; statusClass = 'pending'; break;
+                    case 'shipped': statusText = 'Enviado'; statusClass = 'shipped'; break;
+                    case 'delivered': statusText = 'Entregue'; statusClass = 'delivered'; break;
+                }
+
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.client}</td>
+                    <td>${formattedTotal}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="action-btn invoice" onclick="generateInvoice('${order.id}', '${order.client}', '${formattedTotal}', '${order.status}')">NFe/Etiqueta</button>
+                        ${order.tracking ? `<button class="action-btn track" onclick="trackOrder('${order.tracking}')">Rastrear</button>` : ''}
+                    </td>
+                `;
+                list.appendChild(row);
+            });
+        }
+        
+        // Ações simuladas de back-end
+        function generateInvoice(id, client, total) {
+            alert(`SIMULAÇÃO DE EMISSÃO\nPedido: ${id}\nCliente: ${client}\nValor: ${total}\n\nEm um sistema real, isso geraria um XML/PDF de Nota Fiscal Eletrônica e uma Etiqueta de Envio (e exigiria integração com SEFAZ e transportadora).`);
+        }
+
+        function trackOrder(trackingCode) {
+            alert(`SIMULAÇÃO DE RASTREIO\nCódigo: ${trackingCode}\n\nEm um sistema real, isso te levaria para o site de rastreamento (Correios, Jadlog, etc.).`);
+        }
+
+
+        // --- Simulador de Frete (Front-end) ---
+        document.getElementById('shipping-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const cepOrigem = document.getElementById('cep-origem').value;
+            const cepDestino = document.getElementById('cep-destino').value;
+            const peso = parseFloat(document.getElementById('peso').value);
+            const servico = document.getElementById('servico').value;
+            const resultDiv = document.getElementById('shipping-result');
+
+            let price = 0;
+            let days = 0;
+
+            // Simulação de lógica de frete (apenas exemplo)
+            if (servico === 'pac') {
+                price = 20 + (peso * 5);
+                days = cepDestino.startsWith(cepOrigem.substring(0, 2)) ? 5 : 10; // Mais rápido no mesmo estado
+            } else if (servico === 'sedex') {
+                price = 35 + (peso * 8);
+                days = cepDestino.startsWith(cepOrigem.substring(0, 2)) ? 2 : 5;
+            } else if (servico === 'transportadora') {
+                price = 45 + (peso * 10);
+                days = 3; 
+            }
+            
+            if (peso > 5) {
+                price += 15; // Adiciona taxa por peso alto
+            }
+
+            resultDiv.innerHTML = `
+                <p>📦 Serviço: <strong>${servico.toUpperCase()}</strong></p>
+                <p>💰 Valor Estimado: <strong>R$ ${price.toFixed(2).replace('.', ',')}</strong></p>
+                <p>🗓️ Prazo de Entrega: <strong>${days} dias úteis</strong></p>
+                <p style="margin-top: 10px; font-size: 12px; color: #ff6b35;">*Esta é uma simulação. O cálculo real exige API de transportadora.</p>
+            `;
+        });
+        
+        // --- Adicionar Produto ---
+        const addProductForm = document.getElementById('add-product-form');
+        const productImageFile = document.getElementById('product-image-file');
+        const productImagePreview = document.getElementById('product-image-preview');
+        const productMessage = document.getElementById('product-message');
+
+        // Pré-visualização da imagem
+        productImageFile.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    productImagePreview.src = e.target.result;
+                    productImagePreview.style.display = 'block';
+                    // Salva o Base64 temporariamente (será pego no submit)
+                    productImagePreview.dataset.base64 = e.target.result; 
+                };
+                reader.readAsDataURL(file);
+            } else {
+                productImagePreview.style.display = 'none';
+                productImagePreview.src = '';
+                delete productImagePreview.dataset.base64;
+            }
+        });
+
+        addProductForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const newProduct = {
+                id: Date.now(), // ID baseado no timestamp
+                name: document.getElementById('product-name').value,
+                price: parseFloat(document.getElementById('product-price').value),
+                category: document.getElementById('product-category').value,
+                subcategory: document.getElementById('product-subcategory').value,
+                description: document.getElementById('product-description').value,
+                image: productImagePreview.dataset.base64 || '', // Pega o Base64 da pré-visualização
+                tags: ['Novo', 'Estoque Alto'], // Tags padrão de exemplo
+                createdAt: Date.now() // Timestamp para ordenação
+            };
+            
+            // Lógica de salvar no localStorage
+            try {
+                const stored = localStorage.getItem('ortega_products');
+                let products = stored ? JSON.parse(stored) : [];
+                
+                // Adiciona o novo produto ao início do array (para aparecer no Destaque)
+                products.unshift(newProduct); 
+                localStorage.setItem('ortega_products', JSON.stringify(products));
+                
+                // Limpa o formulário e exibe mensagem
+                addProductForm.reset();
+                productImagePreview.style.display = 'none';
+                productImagePreview.src = '';
+                delete productImagePreview.dataset.base64;
+                
+                productMessage.style.display = 'block';
+                productMessage.textContent = `${newProduct.name} adicionado com sucesso na categoria ${newProduct.category.toUpperCase()}!`;
+                setTimeout(() => productMessage.style.display = 'none', 5000);
+                
+                console.log('Novo produto adicionado:', newProduct);
+            } catch (error) {
+                alert('Erro ao salvar produto: localStorage cheio ou erro de formatação.');
+                console.error('Erro ao salvar produto:', error);
+            }
+        });
+
+
+        // Carregar a lista de pedidos ao iniciar
+        document.addEventListener('DOMContentLoaded', renderOrders);
+    </script>
+</body>
+</html>
