@@ -15,13 +15,13 @@
         body {
             background: linear-gradient(135deg, #4a4438 0%, #2d2922 100%);
             color: #fff;
-            padding-top: 100px;
+            padding-top: 80px; /* Reduzido no mobile */
             min-height: 100vh;
         }
 
         header {
             background: rgba(0, 0, 0, 0.7);
-            padding: 20px 0;
+            padding: 15px 0; /* Ajustado */
             position: fixed;
             width: 100%;
             top: 0;
@@ -36,11 +36,11 @@
             align-items: center;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 15px; /* Ajustado */
         }
         
         .logo {
-            font-size: 28px;
+            font-size: 22px; /* Menor no mobile */
             font-weight: bold;
             color: #fff;
             text-decoration: none;
@@ -74,26 +74,42 @@
 
         .container {
             max-width: 1200px;
-            margin: 40px auto;
-            padding: 20px;
+            margin: 20px auto; /* Reduzido */
+            padding: 15px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             display: flex;
-            gap: 30px;
+            flex-direction: column; /* Empilhado no mobile */
+            gap: 20px;
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                flex-direction: row;
+                padding: 20px;
+                gap: 30px;
+            }
         }
 
         .product-gallery {
             flex: 1.5;
-            min-width: 350px;
-            position: sticky;
-            top: 100px;
+            min-width: 100%;
+            position: static;
             height: fit-content;
+        }
+
+        @media (min-width: 1024px) {
+            .product-gallery {
+                min-width: 350px;
+                position: sticky;
+                top: 100px;
+            }
         }
 
         #main-image {
             width: 100%;
-            height: 450px;
+            height: 350px; /* Ajustado para mobile */
             background: linear-gradient(135deg, #4a4438, #2d2922);
             border-radius: 15px;
             object-fit: cover;
@@ -101,9 +117,13 @@
             display: block;
             margin-bottom: 15px;
             color: #d4a03a;
-            font-size: 150px;
+            font-size: 100px; /* Reduzido emoji */
             text-align: center;
-            line-height: 450px;
+            line-height: 350px;
+        }
+
+        @media (min-width: 768px) {
+            #main-image { height: 450px; line-height: 450px; font-size: 150px; }
         }
         
         #main-image img {
@@ -117,53 +137,51 @@
             display: flex;
             gap: 10px;
             overflow-x: auto;
+            padding-bottom: 5px;
         }
 
         .thumb {
-            width: 80px;
-            height: 80px;
+            width: 60px; /* Menor no mobile */
+            height: 60px;
             background: #2d2922;
             border: 2px solid transparent;
             border-radius: 10px;
             cursor: pointer;
             object-fit: cover;
-            transition: border-color 0.3s;
-        }
-
-        .thumb:hover, .thumb.active {
-            border-color: #ff6b35;
+            flex-shrink: 0;
         }
 
         .product-details {
             flex: 2;
-            padding: 10px;
+            padding: 5px;
         }
 
         #product-category {
             color: #d4a03a;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             letter-spacing: 1px;
             margin-bottom: 10px;
+            display: block;
         }
 
         #product-name {
-            font-size: 36px;
+            font-size: 28px; /* Menor no mobile */
             font-weight: bold;
             margin-bottom: 15px;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            line-height: 1.2;
         }
 
         #product-price {
-            font-size: 48px;
+            font-size: 36px; /* Ajustado */
             font-weight: bold;
             color: #ff6b35;
             margin-bottom: 25px;
         }
 
-        /* --- Opções de Compra --- */
         .options-group {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             padding-bottom: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -172,30 +190,32 @@
             display: block;
             font-weight: bold;
             color: #d4a03a;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: 16px;
         }
 
-        /* Seleção de Tamanho (Buttons) */
+        .size-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
         .size-selector button {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
             border: 2px solid rgba(212, 160, 58, 0.3);
-            padding: 10px 15px;
+            padding: 12px 5px;
             border-radius: 8px;
-            margin-right: 10px;
             cursor: pointer;
-            transition: all 0.2s;
             font-weight: bold;
+            font-size: 14px;
         }
 
         .size-selector button.selected {
             background: #ff6b35;
             border-color: #ff6b35;
-            transform: scale(1.05);
         }
 
-        /* Quantidade */
         .quantity-control {
             display: flex;
             align-items: center;
@@ -204,91 +224,60 @@
 
         .quantity-control input {
             width: 60px;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             border: 2px solid #d4a03a;
             background: rgba(0, 0, 0, 0.2);
             color: #fff;
             border-radius: 8px;
-            font-size: 16px;
         }
         
         .quantity-control button {
             background: #d4a03a;
             color: #fff;
             border: none;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border-radius: 8px;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
-            transition: background 0.3s;
         }
         
-        .quantity-control button:hover {
-            background: #ff6b35;
-        }
-        
-        /* Botão Final */
         #add-to-cart-btn {
             width: 100%;
-            padding: 18px;
+            padding: 20px;
             background: linear-gradient(135deg, #ff6b35, #d4a03a);
             color: #fff;
             border: none;
             border-radius: 50px;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.5);
-            margin-top: 30px;
+            margin-top: 20px;
         }
 
-        #add-to-cart-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.7);
-        }
-
-        /* --- Descrição --- */
         .product-description h3 {
             color: #d4a03a;
             margin-bottom: 15px;
+            font-size: 18px;
+            margin-top: 30px;
         }
 
         #long-description {
             color: #ccc;
-            line-height: 1.8;
-            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 14px;
         }
 
-        /* --- Informações Adicionais (Tabela) --- */
         .specs-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 15px;
+            font-size: 13px;
         }
 
         .specs-table td {
-            padding: 10px;
+            padding: 12px 8px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .specs-table td:first-child {
-            color: #d4a03a;
-            font-weight: bold;
-            width: 30%;
-        }
-
-        @media (max-width: 1024px) {
-            .container {
-                flex-direction: column;
-                padding: 10px;
-            }
-            .product-gallery {
-                min-width: 100%;
-                position: static;
-                height: auto;
-            }
         }
     </style>
 </head>
@@ -307,9 +296,7 @@
             <div id="main-image">
                 <img id="main-image-src" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%232d2922' width='100' height='100'/><text x='50' y='50' font-size='10' text-anchor='middle' alignment-baseline='middle' fill='%23d4a03a'>Carregando...</text></svg>" alt="Imagem Principal">
             </div>
-            
-            <div class="thumb-gallery" id="thumb-gallery">
-                </div>
+            <div class="thumb-gallery" id="thumb-gallery"></div>
         </div>
 
         <div class="product-details">
@@ -318,7 +305,6 @@
 
             <div class="options-group">
                 <p id="product-price">R$ 0,00</p>
-                
                 <label>Selecione o Tamanho:</label>
                 <div class="size-selector" id="size-selector">
                     <button data-size="P">P</button>
@@ -339,37 +325,20 @@
             </div>
 
             <button id="add-to-cart-btn" onclick="handleAddToCart()">ADICIONAR AO CARRINHO 🛒</button>
-            <small id="error-message" style="color: #ff6b35; margin-top: 10px; display: none;">Selecione um tamanho para continuar.</small>
+            <small id="error-message" style="color: #ff6b35; margin-top: 10px; display: none; text-align: center;">Selecione um tamanho para continuar.</small>
 
-
-            <div class="product-description" style="margin-top: 50px;">
+            <div class="product-description">
                 <h3>Descrição Completa</h3>
-                <p id="long-description">
-                    Esta é a descrição detalhada do produto. Ideal para apresentar características, materiais e benefícios do item. 
-                    Neste modelo, usamos uma descrição genérica para fins de prototipagem.
-                </p>
+                <p id="long-description">Carregando...</p>
                 
                 <h3>Especificações</h3>
                 <table class="specs-table">
-                    <tr>
-                        <td>Categoria</td>
-                        <td id="spec-category">...</td>
-                    </tr>
-                    <tr>
-                        <td>Subcategoria</td>
-                        <td id="spec-subcategory">...</td>
-                    </tr>
-                    <tr>
-                        <td>Tags</td>
-                        <td id="spec-tags">...</td>
-                    </tr>
-                    <tr>
-                        <td>ID do Produto</td>
-                        <td id="spec-id">...</td>
-                    </tr>
+                    <tr><td>Categoria</td><td id="spec-category">...</td></tr>
+                    <tr><td>Subcategoria</td><td id="spec-subcategory">...</td></tr>
+                    <tr><td>Tags</td><td id="spec-tags">...</td></tr>
+                    <tr><td>ID</td><td id="spec-id">...</td></tr>
                 </table>
             </div>
-
         </div>
     </div>
 
@@ -378,13 +347,9 @@
         let selectedSize = null;
 
         function getProductIdFromUrl() {
-            // Em uma loja real, esta função extrairia o ID da URL (?id=X)
-            // Agora, vamos simular lendo o ID, se existir, senão pegamos o primeiro da lista.
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
-            
             if (id) return id;
-            
             const stored = localStorage.getItem('ortega_products');
             if (stored) {
                 const products = JSON.parse(stored);
@@ -399,15 +364,13 @@
                 document.getElementById('product-name').textContent = 'Produto não encontrado.';
                 return;
             }
-
             const storedProducts = JSON.parse(localStorage.getItem('ortega_products') || '[]');
             currentProduct = storedProducts.find(p => p.id === productId);
-
             if (currentProduct) {
                 renderDetails(currentProduct);
                 loadCartCount();
             } else {
-                document.getElementById('product-name').textContent = 'Detalhes do produto indisponíveis.';
+                document.getElementById('product-name').textContent = 'Detalhes indisponíveis.';
             }
         }
         
@@ -417,14 +380,11 @@
             document.getElementById('product-price').textContent = `R$ ${product.price.toFixed(2).replace('.', ',')}`;
             document.getElementById('long-description').textContent = product.description + ". Este produto foi cadastrado no painel administrativo.";
             document.getElementById('stock-info').textContent = `Em estoque: ${product.stock || 0} unidades`;
-
-            // Especificações
             document.getElementById('spec-category').textContent = product.category.toUpperCase();
             document.getElementById('spec-subcategory').textContent = product.subcategory || 'N/A';
             document.getElementById('spec-tags').textContent = product.tags.join(', ');
             document.getElementById('spec-id').textContent = product.id;
 
-            // Imagem 
             const mainImageElement = document.getElementById('main-image-src');
             const mainImageContainer = document.getElementById('main-image');
             
@@ -434,17 +394,10 @@
                  mainImageContainer.textContent = '';
             } else {
                  mainImageElement.style.display = 'none';
-                 // Emoji da categoria no placeholder
-                 const categoryEmojis = {
-                    'camisas': '👕',
-                    'acessorios': '🎒',
-                    'calcados': '👟',
-                    'bermudas': '🩳'
-                };
-                 mainImageContainer.textContent = categoryEmojis[product.category] || '📦';
+                 const emojis = {'camisas': '👕','acessorios': '🎒','calcados': '👟','bermudas': '🩳'};
+                 mainImageContainer.textContent = emojis[product.category] || '📦';
             }
             
-            // Adiciona listener aos botões de tamanho
             const sizeSelector = document.getElementById('size-selector');
             sizeSelector.querySelectorAll('button').forEach(button => {
                 button.addEventListener('click', function() {
@@ -455,48 +408,35 @@
                 });
             });
             
-             // Desabilita o botão se o estoque for 0
              if (product.stock <= 0) {
                 document.getElementById('add-to-cart-btn').disabled = true;
                 document.getElementById('add-to-cart-btn').textContent = 'FORA DE ESTOQUE';
                 document.getElementById('stock-info').style.color = '#ff6b35';
                 document.getElementById('stock-info').textContent = 'Produto esgotado!';
-            } else if (product.stock < 5) {
-                 document.getElementById('stock-info').style.color = '#ff6b35'; // Estoque baixo em laranja
             }
         }
         
-        // Função do Carrinho (Adaptada para Tamanho/Qtd)
         window.handleAddToCart = function() {
             const quantityInput = document.getElementById('product-quantity');
             const quantity = parseInt(quantityInput.value, 10);
-            
             if (!selectedSize) {
                 document.getElementById('error-message').style.display = 'block';
-                window.scrollTo({ top: 300, behavior: 'smooth' });
                 return;
             }
-            
             if (!currentProduct || quantity <= 0) return;
-
             try {
                 let cart = JSON.parse(localStorage.getItem('ortega_cart') || '[]');
-                
-                // Cria um ID único para o item no carrinho (Produto ID + Tamanho)
                 const cartItemId = `${currentProduct.id}_${selectedSize}`; 
                 const existingItem = cart.find(item => item.cartId === cartItemId);
-                
-                // Verifica estoque simulado
                 if (currentProduct.stock < quantity) {
-                    alert(`Estoque insuficiente! Temos apenas ${currentProduct.stock} unidades disponíveis.`);
+                    alert(`Estoque insuficiente!`);
                     return;
                 }
-
                 if (existingItem) {
                     existingItem.quantity += quantity;
                 } else {
                     cart.push({ 
-                        cartId: cartItemId, // Novo ID de item de carrinho
+                        cartId: cartItemId,
                         id: currentProduct.id, 
                         name: `${currentProduct.name} - Tam: ${selectedSize}`, 
                         price: currentProduct.price, 
@@ -506,44 +446,29 @@
                         subcategory: currentProduct.subcategory
                     });
                 }
-
                 localStorage.setItem('ortega_cart', JSON.stringify(cart));
                 loadCartCount();
-                alert(`🛒 ${quantity}x "${currentProduct.name}" (Tam: ${selectedSize}) adicionado ao carrinho!`);
-
-            } catch (e) {
-                console.error("Erro ao adicionar ao carrinho:", e);
-                alert('Erro ao adicionar item ao carrinho. Tente novamente.');
-            }
+                alert(`🛒 Adicionado com sucesso!`);
+            } catch (e) { alert('Erro ao adicionar.'); }
         };
 
         window.changeQuantity = function(delta) {
             const input = document.getElementById('product-quantity');
             let current = parseInt(input.value, 10);
             let newValue = current + delta;
-            
             if (newValue < 1) newValue = 1;
-            
-            if (currentProduct && newValue > currentProduct.stock) {
-                alert(`Limite de estoque atingido! Máximo: ${currentProduct.stock}`);
-                newValue = currentProduct.stock;
-            }
-            
+            if (currentProduct && newValue > currentProduct.stock) newValue = currentProduct.stock;
             input.value = newValue;
         };
 
-        // Função de Contagem do Carrinho
         function loadCartCount() {
             try {
                 const cart = JSON.parse(localStorage.getItem('ortega_cart') || '[]');
                 const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
                 document.getElementById('cart-count').textContent = totalItems;
-            } catch (e) {
-                document.getElementById('cart-count').textContent = 0;
-            }
+            } catch (e) { document.getElementById('cart-count').textContent = 0; }
         }
 
-        // --- INICIALIZAÇÃO ---
         document.addEventListener('DOMContentLoaded', loadProductDetails);
     </script>
 </body>
